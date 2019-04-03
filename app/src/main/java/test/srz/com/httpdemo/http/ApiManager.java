@@ -7,13 +7,20 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.internal.platform.Platform;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -31,11 +38,23 @@ public class ApiManager {
     /**
      * 实例化Retrofit
      */
-    private static Retrofit sRetrofit;
+    private static Retrofit                 sRetrofit;
+    private static List<MultipartBody.Part> params;
+    private static ApiManager               mApiManager;
+    private static Map<String, RequestBody> params2;
 
     /**
      * 初始化OkHttp3的客户端
      */
+
+    public static ApiManager getInstance() {
+        if (mApiManager == null) {
+            mApiManager = new ApiManager();
+            params = new ArrayList<>();
+            params2 = new HashMap<>();
+        }
+        return mApiManager;
+    }
     private static OkHttpClient client = new OkHttpClient.Builder()
             .addInterceptor(new LoggingInterceptor.Builder()
                     .loggable(LogUtil.sIsDebug)
@@ -96,5 +115,53 @@ public class ApiManager {
     }
 
 
+    public ApiManager addParameter( Object o) {
+        MultipartBody.Part part;
+        RequestBody        body = RequestBody.create(MediaType.parse("multipart/form-data;charset=UTF-8"), (File) o);
+        part = MultipartBody.Part.createFormData("upload_file", "student.jpg", body);
+        params.add(part);
+        return this;
+    }
+
+    /**
+     * 构建RequestBody
+     */
+    public List<MultipartBody.Part> bulider() {
+
+        return params;
+    }
+    public void clear(){
+        params.clear();
+    }
+
+
+    //第二种
+    /**
+     * 添加参数
+     * 根据传进来的Object对象来判断是String还是File类型的参数
+     */
+    public ApiManager addParameter(String key, Object o) {
+
+        if (o instanceof String) {
+            RequestBody body = RequestBody.create(MediaType.parse("text/plain;charset=UTF-8"), (String) o);
+            params2.put(key, body);
+        } else if (o instanceof File) {
+            RequestBody body = RequestBody.create(MediaType.parse("multipart/form-data;charset=UTF-8"), (File) o);
+            params2.put(key + "\"; filename=\"" + ((File) o).getName() + "", body);
+        }
+        return this;
+    }
+
+    /**
+     * 构建RequestBody
+     */
+    public Map<String, RequestBody> bulider2() {
+
+        return params2;
+    }
+
+    public void clear2(){
+        params.clear();
+    }
 
 }

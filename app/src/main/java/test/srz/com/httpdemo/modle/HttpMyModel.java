@@ -1,10 +1,21 @@
 package test.srz.com.httpdemo.modle;
 
 
+import java.util.List;
+import java.util.Map;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
+import retrofit2.http.Query;
 import rx.Observable;
+import test.srz.com.httpdemo.bean.BaseBean;
 import test.srz.com.httpdemo.bean.TestBean;
 import test.srz.com.httpdemo.bean.getLocationBean;
 import test.srz.com.httpdemo.bean.upDataUserInfoBean;
@@ -41,4 +52,20 @@ public interface HttpMyModel {
     Observable<getLocationBean> getLocationList(@Body getLocationParam param);
 
 
+    //上传文件的写法第一种
+    @Multipart
+    @POST("teacher/classzone/upload_file")
+    Call<BaseBean> upLoad1(@Query("grade_id") String gradeId,
+                               @Query("join_id") String joinId,
+                               @Query("resource_type") String resourceType,
+                               @Query("class_id") String classId,
+                               @Query("account") String account,
+                               @Query("token") String token,
+                               @Part List<MultipartBody.Part> parts);
+
+
+    //上传文件的写法第二种
+    @Multipart
+    @POST("file/upLoad.do")
+    Call<BaseBean> upLoad2(@PartMap Map<String, RequestBody> params);
 }

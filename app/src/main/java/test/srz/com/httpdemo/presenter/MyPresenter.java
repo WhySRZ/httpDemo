@@ -1,6 +1,9 @@
 package test.srz.com.httpdemo.presenter;
 
 
+import retrofit2.Call;
+import retrofit2.Response;
+import test.srz.com.httpdemo.bean.BaseBean;
 import test.srz.com.httpdemo.bean.TestBean;
 import test.srz.com.httpdemo.bean.getLocationBean;
 import test.srz.com.httpdemo.bean.getUserInfoDetailBean;
@@ -8,6 +11,7 @@ import test.srz.com.httpdemo.bean.upDataUserInfoBean;
 import test.srz.com.httpdemo.http.ApiManager;
 import test.srz.com.httpdemo.http.HttpController;
 import test.srz.com.httpdemo.http.OnRequestListener;
+import test.srz.com.httpdemo.http.RetrofitCallBack;
 import test.srz.com.httpdemo.modle.HttpMyModel;
 import test.srz.com.httpdemo.param.getLocationParam;
 import test.srz.com.httpdemo.param.getUserInfoDetailParam;
@@ -69,7 +73,20 @@ public class MyPresenter {
 
           HttpController.getIntance().httpT(ApiManager.getsRetrofit().create(HttpMyModel.class).getTestHttp(),1,listener);
     }
+    //测试上传
+    public static void test(Call call, final RetrofitCallBack<Response<BaseBean>> listener) {
 
+        //HttpController.getIntance().httpT(ApiManager.getsRetrofit().create(UploadModel2.class).insertInfo(param), 2, listener);
+        //HttpController.getIntance().loadFile(call,2,listener);
+        HttpController.getIntance().addToEnqueue(call,listener,1);
+    }
+
+    public static void test2(Call call, final RetrofitCallBack<Response<BaseBean>> listener) {
+
+        //HttpController.getIntance().httpT(ApiManager.getsRetrofit().create(UploadModel2.class).insertInfo(param), 2, listener);
+        //HttpController.getIntance().loadFile(call,2,listener);
+        HttpController.getIntance().addToEnqueue(call,listener,1);
+    }
 }
 
 
